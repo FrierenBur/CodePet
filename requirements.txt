@@ -1,0 +1,4 @@
+# CodePet桌面宠物依赖
+Pillow>=9.0.0
+pyyaml>=6.0
+pywin32>=300;platform_system=="Windows"

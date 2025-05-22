@@ -10,7 +10,7 @@ user:
 # 宠物配置  
 pet:
   name: "皮皮"               # 宠物名称
-  type: "cat"                # 宠物类型 (cat/dog/penguin)
+  type: "test"               # 宠物类型 (cat/dog/penguin/test)
   personality: "cheerful"    # 性格: cheerful(开朗), shy(害羞), quirky(古怪)
   voice:
     enable: true             # 是否启用语音交互
