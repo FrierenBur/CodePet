@@ -70,3 +70,5 @@ Desktop.ini
 *.tmp
 .coverage
 htmlcov/
+
+开发进度顺序.md
