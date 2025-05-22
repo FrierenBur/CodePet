@@ -53,3 +53,55 @@ CodePet 是一个陪伴式的桌面宠物，它可以监测你每天使用编程
 
 ```bash
 pip install websocket-client sounddevice simpleaudio requests pyaudio ffmpeg-python
+
+项目结构
+
+codepet/
+├── main.py                  # 启动入口
+├── config/
+│   ├── settings.yaml        # 全局配置（宠物设置、用户配置）
+│   └── model_config.json    # 模型和语音引擎配置
+├── core/                    # 核心功能模块
+│   ├── activity/            # 编程活跃度检测
+│   │   ├── tracker.py           # 活动监控（窗口/应用）
+│   │   └── keylogger.py         # 键盘敲击记录
+│   ├── stats/
+│   │   ├── logger.py            # 每日数据写入
+│   │   └── db_manager.py        # SQLite 管理器
+│   ├── pet/                 # 宠物行为/状态管理
+│   │   ├── controller.py        # 动作控制、情绪切换
+│   │   └── model.py             # 宠物数据类（状态/心情/行为）
+│   ├── voice/               # 语音交互模块
+│   │   ├── asr_client.py        # 火山 ASR 接入
+│   │   ├── llm_client.py        # 火山 LLM 对话逻辑
+│   │   ├── tts_client.py        # 火山 TTS 合成
+│   │   └── dialog_manager.py    # 语音整体流程控制器
+│   ├── scheduler/           # 定时器、每日任务调度
+│   │   └── jobs.py              # 提醒打卡、保存日报等
+│   └── events.py            # 全局事件分发中心（用于插件通信）
+├── plugins/                 # 插件模块（独立解耦）
+│   ├── base.py              # 插件基类定义
+│   ├── achievement.py       # 成就系统插件
+│   ├── pomodoro.py          # 番茄钟插件
+│   └── github_stats.py      # GitHub 贡献图插件（可选联网）
+├── ui/                      # 桌面 UI 组件（主界面、动画、托盘）
+│   ├── window.py            # 主窗口（Tkinter / PyQt）
+│   ├── animator.py          # 播放宠物动画
+│   └── tray.py              # 系统托盘菜单
+├── assets/                  # 图片、动画帧、音效资源
+│   ├── pets/                # 多个宠物模型
+│   └── sounds/              # 播报音效等
+├── data/                    # 本地数据存储
+│   ├── stats.db             # SQLite 数据库
+│   ├── logs/                # 日志文件夹
+│   └── temp/                # 缓存语音或帧图
+├── web/                     # Web 控制台（可选）
+│   ├── api.py               # FastAPI 提供设置控制接口
+│   └── dashboard.html       # 可视化数据页面（或前端打包）
+├── utils/                   # 公共辅助工具
+│   ├── time_utils.py
+│   ├── audio_utils.py
+│   └── system_utils.py
+├── requirements.txt
+└── README.md
+
