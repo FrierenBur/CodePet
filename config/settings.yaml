@@ -1,0 +1,60 @@
+# CodePet 全局配置文件
+
+# 用户配置
+user:
+  name: "程序员"              # 用户名称，宠物会称呼您
+  workspace:                 # 监控的工作区路径列表
+    - "C:/Projects"
+    - "D:/Code"
+  
+# 宠物配置  
+pet:
+  name: "皮皮"               # 宠物名称
+  type: "cat"                # 宠物类型 (cat/dog/penguin)
+  personality: "cheerful"    # 性格: cheerful(开朗), shy(害羞), quirky(古怪)
+  voice:
+    enable: true             # 是否启用语音交互
+    volume: 0.8              # 音量 (0.0-1.0)
+    speed: 1.0               # 语速 (0.5-2.0)
+  
+# 界面设置
+ui:
+  theme: "light"             # 主题: light(浅色), dark(深色)
+  transparency: 0.9          # 窗口透明度 (0.1-1.0)
+  always_on_top: true        # 是否总是置顶
+  position:
+    x: -1                    # 窗口位置X (-1为自动)
+    y: -1                    # 窗口位置Y (-1为自动)
+  animation:
+    fps: 24                  # 动画帧率
+    scale: 1.0               # 宠物大小缩放 (0.5-2.0)
+
+# 程序统计设置
+stats:
+  record_idle_threshold: 300 # 空闲时间阈值(秒)
+  daily_goal: 6              # 每日编程小时目标
+  enable_keylogger: true     # 是否启用按键记录
+  programming_apps:          # 要监控的编程应用列表
+    - "code.exe"             # VS Code
+    - "pycharm64.exe"        # PyCharm
+    - "idea64.exe"           # IntelliJ IDEA
+    - "sublime_text.exe"     # Sublime Text
+    - "atom.exe"             # Atom
+    - "eclipse.exe"          # Eclipse
+    - "powershell.exe"       # PowerShell
+    - "cmd.exe"              # Command Prompt
+    - "WindowsTerminal.exe"  # Windows Terminal
+    - "chrome.exe"           # 对GitHub, Gitlab等网站进行过滤
+
+# 通知设置
+notifications:
+  enable: true               # 是否启用通知
+  rest_reminder: 55          # 休息提醒时长(分钟)
+  daily_summary: true        # 是否显示每日总结
+  achievement_alerts: true   # 是否显示成就通知
+
+# 启用的插件
+plugins:
+  achievement: true          # 成就系统
+  pomodoro: true             # 番茄钟
+  github_stats: false        # GitHub贡献图
