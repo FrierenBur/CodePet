@@ -118,44 +118,35 @@ class Animator:
                 self.load_animation_sequence(action_folder_name) # 使用子文件夹名作为动作名进行加载
 
 
-    def set_current_animation(self, animation_name): # animation_name 是要设置的动作名
-        """
-        设置当前要播放的动作动画。
-        如果该动作未加载或没有有效帧，会尝试按需加载。
-        返回 True 表示设置成功 (或已是当前动画)，返回 False 表示设置失败。
-        """
-        # 检查请求的动作是否存在于已加载的动画中，并且确实有帧
+    # 在 animator.py 的 Animator 类中
+    def set_current_animation(self, animation_name):
+        print(f"Animator: 请求设置当前动作为 '{animation_name}'. 当前是 '{self._current_animation_name}'.") # 新增日志
         if animation_name not in self._animations or not self._animations.get(animation_name):
-            print(f"警告: 尝试为角色 '{os.path.basename(self.base_pet_path)}' 设置的动作 '{animation_name}' "
-                  f"不可用 (可能未加载或帧列表为空)。")
-            
-            # 如果动作名根本不在 _animations 字典的键中 (表示从未尝试加载过)
+            print(f"Animator: 动作 '{animation_name}' 不在已加载或帧列表为空。当前已加载动作: {list(self._animations.keys())}") # 新增日志
             if animation_name not in self._animations:
-                print(f"尝试按需加载动作 '{animation_name}'...")
-                self.load_animation_sequence(animation_name) # 调用加载方法
-            
-            # 再次检查加载后是否可用 (即加载成功并且有帧)
-            if not self._animations.get(animation_name):
-                print(f"错误: 无法为角色 '{os.path.basename(self.base_pet_path)}' 设置动作 '{animation_name}'，"
-                      f"加载失败或加载后帧列表为空。")
-                return False # 设置失败
+                print(f"Animator: 尝试按需加载动作 '{animation_name}'...")
+                self.load_animation_sequence(animation_name)
 
-        # 如果动画名与当前已在播放的动画名相同，通常无需做任何事，除非需要强制重置
-        # if self._current_animation_name == animation_name and self._current_frames == self._animations[animation_name]:
-        #     print(f"角色 '{os.path.basename(self.base_pet_path)}' 已经在播放动作 '{animation_name}'。")
-        #     return True # 已经是这个动画了
+            if not self._animations.get(animation_name): # 再次检查
+                print(f"Animator ERROR: 无法为角色 '{os.path.basename(self.base_pet_path)}' 设置或加载动作 '{animation_name}'。") # 修改日志
+                return False
 
-        print(f"角色 '{os.path.basename(self.base_pet_path)}' 切换动作到: '{animation_name}'")
-        self._current_animation_name = animation_name  # 更新当前动作名
-        self._current_frames = self._animations[animation_name]  # 更新当前帧列表
-        self._current_frame_index = 0  # 切换动作时，总是从第一帧开始播放
+        # 如果要设置的动作和当前动作相同，并且帧列表也相同，则可能无需重置 (除非需要强制从头播放)
+        if self._current_animation_name == animation_name and self._current_frames is self._animations.get(animation_name):
+            print(f"Animator: 角色 '{os.path.basename(self.base_pet_path)}' 已在播放动作 '{animation_name}'，帧索引重置为0。")
+            self._current_frame_index = 0 # 即使是相同动画，也重置到第一帧，确保重新播放
+            return True
 
-        # 如果这个新设置的动作有有效的帧，并且 Animator 的整体帧尺寸 (_frame_size) 还未设定，
-        # (例如，这是 Animator 初始化后成功设置的第一个有帧的动作)
-        # 则用这个动作的第一帧的尺寸来设定 _frame_size。
-        if self._current_frames and self._frame_size.isEmpty():
+
+        print(f"Animator: 角色 '{os.path.basename(self.base_pet_path)}' 切换动作到: '{animation_name}'")
+        self._current_animation_name = animation_name
+        self._current_frames = self._animations[animation_name]
+        self._current_frame_index = 0
+        if self._current_frames and self._frame_size.isEmpty(): # 一般_frame_size在第一次加载时就定了
             self._frame_size = self._current_frames[0].size()
-        return True # 设置成功
+        elif not self._current_frames: # 如果切换到的动作没有帧
+            print(f"Animator WARN: 动作 '{animation_name}' 被设置，但它没有帧！")
+        return True
 
 
     def next_frame(self):
