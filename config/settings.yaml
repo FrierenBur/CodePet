@@ -10,24 +10,115 @@ user:
 # 宠物配置  
 pet:
   name: "皮皮"               # 宠物名称
-  type: "test"               # 宠物类型 (cat/dog/penguin/test)
+  type: "test"               # 宠物类型/角色名 (对应 assets/pets/ 下的文件夹名)
   personality: "cheerful"    # 性格: cheerful(开朗), shy(害羞), quirky(古怪)
-  voice:
+  
+  # --- 新增：与 PetController 行为和更新频率相关的参数 ---
+  controller_update_call_interval_ms: 200 # main.py 中 QTimer 调用 PetController.update_pet_stats_periodically 的间隔(毫秒)
+  state_update_interval: 10.0             # PetController 内部属性（如能量）更新的间隔 (秒)
+
+  voice: # 语音相关配置
     enable: true             # 是否启用语音交互
     volume: 0.8              # 音量 (0.0-1.0)
     speed: 1.0               # 语速 (0.5-2.0)
-  
+
+  # --- 新增：更详细的行为参数，用于 PetController ---
+  behavior_params:
+    thresholds: # 各种阈值
+      low_energy: 20                   # 低能量警告阈值
+      energy_tired: 20                 # 能量低于此值时心情变为 TIRED
+      happiness_sad: 30                # 快乐值低于此值时心情变为 SAD
+      energy_happy_excited: 80         # 能量高于此值 (且快乐也高) 时心情 HAPPY/EXCITED
+      happiness_happy_excited: 70      # 快乐值高于此值 (且能量也高) 时心情 HAPPY/EXCITED
+      energy_normal: 60                # 能量高于此值 (且快乐也高) 时心情 NORMAL
+      happiness_normal: 50             # 快乐值高于此值 (且能量也高) 时心情 NORMAL
+      work_long_for_tired: 3600        # 工作超过此时长 (秒) 后，结束时可能感到疲劳
+      work_medium_for_happy: 1800      # 工作超过此时长 (秒) 后，结束时可能感到开心
+      idle_to_sleep_in_work: 1800      # 工作状态下，空闲超过此时长 (秒) 则睡觉
+      idle_to_bored_in_work: 600       # 工作状态下，空闲超过此时长 (秒) 则表现无聊/休息
+    
+    decay_rates: # 属性衰减率 (每 state_update_interval 秒减少的值)
+      energy_working: 2
+      happiness_working: 1
+      happiness_idle: 0.5
+      
+    regen_rates: # 属性恢复率 (每 state_update_interval 秒增加的值)
+      energy_idle: 1
+      energy_sleeping: 5
+      happiness_sleeping: 2
+      
+    durations: # 各种临时动作的持续时间 (秒) 或范围 (min, max)
+      alert_low_energy: 5.0
+      encourage_work_start: 3.0
+      tired_after_long_work: 5.0
+      happy_after_medium_work: 3.0
+      rest_when_bored: 10.0
+      keypress_reaction_min: 1.5
+      keypress_reaction_max: 3.0
+      celebrate_achievement: 5.0
+      celebrate_goal: 4.0
+      react_min: 1.0  # 点击反应动画的最短持续时间
+      react_max: 2.5  # 点击反应动画的最长持续时间
+      eat: 3.0        # 进食动画持续时间
+      
+    chances: # 各种随机行为的触发概率 (0.0 到 1.0)
+      encourage_on_work_start: 0.4 # 开始工作时播放鼓励动画的概率
+      keypress_reaction: 0.1       # 工作中每隔一定按键数触发反应动画的概率
+      
+    intervals: # 各种检查间隔
+      keypress_reaction: 50        # 工作中每多少次按键检查一次是否触发反应动画
+      
+    reactions: # 反应类型列表
+      on_keypress: ["SURPRISED", "HAPPY", "ENCOURAGE"] # 按键时可能触发的动作类型 (字符串形式，需与ActionType枚举对应)
+      
+    gains: # 因某些行为获得的属性增长值
+      happiness_on_click: 2
+      energy_on_feed: 20
+      happiness_on_feed: 10
+
+  # --- 新增：宠物对话库占位符 ---
+  # 你可以根据 PetController 中 get_random_message 的逻辑来填充这个部分
+  # 这里只是一个非常简单的结构示例
+  pet_dialogues:
+    default_fallback: # 通用回退，当其他更具体的消息找不到时使用
+      any_mood: # 适用于任何心情
+        any_mood: # 适用于任何上下文 (这个双重 any_mood 是为了匹配 get_random_message 中的层级)
+          - "嗯..."
+          - "喵？"
+          - "我在想事情..."
+    cheerful: # 开朗性格的对话
+      general_idle: # 通用空闲时的对话
+        any_mood: # 适用于任何心情
+          - "今天天气真好呀！"
+          - "要不要一起做点什么有趣的事？"
+      greeting: # 打招呼的上下文
+        normal: 
+          - "嗨！今天准备写什么代码？"
+          - "你好啊！我们开始编程吧！"
+        happy: 
+          - "太棒了！又是美好的编程日！"
+          - "哇，看到你真高兴！来写代码吧！"
+        tired: 
+          - "嘿...虽然我有点累，但还是很高兴见到你！"
+          - "唔...今天或许可以写少一点代码？"
+      encouragement: # 鼓励的上下文
+        happy: ["你太棒了！简直是天才！"]
+        normal: ["继续加油，你做的很好！"]
+      rest_reminder: # 休息提醒的上下文 (假设有这个上下文)
+        normal: ["工作了很久啦，休息一下眼睛吧！"]
+    #可以为 shy, quirky 等其他性格添加类似的对话结构
+
 # 界面设置
 ui:
   theme: "light"             # 主题: light(浅色), dark(深色)
   transparency: 0.9          # 窗口透明度 (0.1-1.0)
   always_on_top: true        # 是否总是置顶
-  position:
+  position:                  #
     x: -1                    # 窗口位置X (-1为自动)
     y: -1                    # 窗口位置Y (-1为自动)
-  animation:
-    fps: 24                  # 动画帧率
-    scale: 1.0               # 宠物大小缩放 (0.5-2.0)
+  animation:                 #
+    fps: 24                  # 动画帧率 (注意：我们当前的动画速度由 DEFAULT_ANIMATION_SPEED_MS 控制，这个fps可能用于其他地方或需要转换)
+    scale: 1.0               # 宠物大小缩放 (0.5-2.0) (这个参数目前在 PetWindow 中没有直接使用，窗口是固定大小)
 
 # 程序统计设置
 stats:

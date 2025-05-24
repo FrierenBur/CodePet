@@ -77,9 +77,11 @@ class PetWindow(QWidget):
         这个方法总是在主GUI线程中被调用 (通过 QTimer.singleShot 从 handle_play_animation_event 调度)。
         它负责安全地停止旧的动画定时器，并调用 play_animation 来启动新的动画。
         """
+        
         character_name_from_event = event_data.get('character_name')
         action_name_from_event = event_data.get('action_name')
-
+        print("这里是window......"+action_name_from_event)
+        
         logger.info(f"PetWindow (_process_play_animation_event): 正在主线程处理播放指令 - 角色: {character_name_from_event}, 动作: {action_name_from_event}")
 
         if self.current_pet_character_name == character_name_from_event and action_name_from_event:
