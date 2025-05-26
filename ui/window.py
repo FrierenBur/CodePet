@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__) # 获取 logger 实例
 # --- 全局常量定义 ---
 FIXED_WINDOW_WIDTH = 150
 FIXED_WINDOW_HEIGHT = 150
-DEFAULT_ANIMATION_SPEED_MS = 100
+DEFAULT_ANIMATION_SPEED_MS = 20
 DEFAULT_ACTION_ANIMATION = "idle"
 
 class PetWindow(QWidget):
